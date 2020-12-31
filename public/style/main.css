@@ -1,0 +1,21 @@
+
+
+
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#videoPlayer {
+    width:90%;
+    
+}
+
+#videoBrowser { 
+    height: 200px;
+    overflow: scroll;;
+}
+#videoBrowser > div { 
+    border: 1px solid #808080;
+    margin: 5px;
+    padding:7px;
+}
