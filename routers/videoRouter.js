@@ -16,13 +16,15 @@ console.log('CHUNK_SIZE', CHUNK_SIZE);
 var router = express.Router();
 console.log('VIDEO_ROOT',process.env.VIDEO_ROOT)
 function getVideoPath(videoID) {
-    console.log('video root', process.env.VIDEO_ROOT);
-    var videoPath = path.join(process.env.VIDEO_ROOT, videoID);
+    var videoRoot = process.env.VIDEO_ROOT || "/shares/media/video/";
+    console.log('video root', videoRoot);
+    var videoPath = path.join(videoRoot, videoID);
     console.log('path:',videoPath);
     return videoPath;
 }
 
 function getByteRange(rangeHeader) {
+    console.log('Range Header:',rangeHeader)
     var byteRangeString = rangeHeader.split('=')[1];
     console.log(byteRangeString);
     byteParts = byteRangeString.split('-');
@@ -51,14 +53,17 @@ function getContentType(videoID) {
 router.get('/:videoID', (req, res, next) => { 
     var videoID = req.params.videoID;
     const request_range  = req.headers.range;
+    console.log(request_range);
     console.log(request_range)
-    var range = getByteRange(request_range);
+    
 
     console.log(range);
     if(request_range == null) {
         res.status(400).send("a range header is necessary");
         return;
     }
+    var range = getByteRange(request_range);
+    
     var videoPath = getVideoPath(videoID);
     fs.stat(videoPath,(err, stat) => {
         if(err) {
