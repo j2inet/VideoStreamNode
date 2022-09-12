@@ -26,16 +26,27 @@ if (app.get('env') === 'production') {
    app.set('trust proxy', 1);
    sessionSettings.cookie.secure = true;
 }
-app.use(express.static('public'));
+//app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(fileUpload({
-   createPath: true
+   createParentPath: true
 }));
+
+app.use(express.static('public'));
+//app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+
 
 const libraryRouter = require('./routers/libraryRouter');
 const videoRouter = require('./routers/videoRouter');
+const uploadRouter = require('./routers/uploadRouter');
+const largeUploadRouter = require('./routers/largeUpload');
+
 app.use('/library', libraryRouter);
 app.use('/video', videoRouter);
+app.use('/upload', uploadRouter);
+app.use('/stremUpload', largeUploadRouter);
 
 app.use(function (req, res, next) {
    console.log(req.originalUrl);

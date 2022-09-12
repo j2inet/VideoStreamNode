@@ -36,9 +36,7 @@ function getByteRange(rangeHeader) {
     } else {
         range.push(Number.parseInt(byteParts[1]))
     }
-
     return range;
-
 }
 
 function getContentType(videoID) {
@@ -55,7 +53,6 @@ router.get('/:videoID', (req, res, next) => {
     const request_range  = req.headers.range;
     console.log(request_range);
     console.log(request_range)
-    
 
     console.log(range);
     if(request_range == null) {
@@ -63,7 +60,6 @@ router.get('/:videoID', (req, res, next) => {
         return;
     }
     var range = getByteRange(request_range);
-    
     var videoPath = getVideoPath(videoID);
     fs.stat(videoPath,(err, stat) => {
         if(err) {
@@ -91,9 +87,8 @@ router.get('/:videoID', (req, res, next) => {
         const videoStream = fs.createReadStream(videoPath, {start, end});
         videoStream.pipe(res);
         console.log('done')
-    })
-
-})
+    });
+});
 
 
 module.exports = router;
