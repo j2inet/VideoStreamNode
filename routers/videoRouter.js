@@ -15,6 +15,10 @@ console.log('CHUNK_SIZE', CHUNK_SIZE);
 
 var router = express.Router();
 console.log('VIDEO_ROOT',process.env.VIDEO_ROOT)
+
+if(!process.env.VIDEO_ROOT) {
+    console.err('Define an environment variable named `VIDEO_ROOT` that points to the folder containing the files ready to be streamed');
+}
 function getVideoPath(videoID) {
     var videoRoot = process.env.VIDEO_ROOT || "/shares/media/video/";
     console.log('video root', videoRoot);

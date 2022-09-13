@@ -4,7 +4,8 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
 const path = require('path');
-const { uuid } = require('uuidv4');
+const { v4: uuidv4 } = require('uuid');
+const Busboy = require('connect-busboy');
 require('dotenv').config();
 
 
@@ -15,38 +16,46 @@ var sessionSettings = {
    cookie: {},
    unset: 'destroy',
    genid: function (req) {
-      return uuid();
+      return uuidv4();
    }
 }
 
 
 app = express();
-app.use(session(sessionSettings));
+app.use(Busboy({
+   immediate: true,
+   limits: 10* 1073741824,
+   highWaterMark: 4 * 1048576, // Set 4 megabyte buffer
+}));
+
+/*app.use(session(sessionSettings));
 if (app.get('env') === 'production') {
    app.set('trust proxy', 1);
    sessionSettings.cookie.secure = true;
 }
+*/
 //app.use(express.static('public'));
-app.use(bodyParser.json());
-app.use(fileUpload({
-   createParentPath: true
-}));
+//app.use(bodyParser.json());
+//app.use(fileUpload({
+//   createParentPath: true
+//}));
+//app.use(bodyParser.urlencoded({extended: true}));
+
+
 
 app.use(express.static('public'));
-//app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-
 
 
 const libraryRouter = require('./routers/libraryRouter');
 const videoRouter = require('./routers/videoRouter');
 const uploadRouter = require('./routers/uploadRouter');
-const largeUploadRouter = require('./routers/largeUpload');
+const streamRouter = require('./routers/streamRouter');
 
 app.use('/library', libraryRouter);
 app.use('/video', videoRouter);
 app.use('/upload', uploadRouter);
-app.use('/stremUpload', largeUploadRouter);
+app.use('/streamUpload', streamRouter);
+
 
 app.use(function (req, res, next) {
    console.log(req.originalUrl);
